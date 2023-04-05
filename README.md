@@ -17,5 +17,5 @@ onnxruntime demo and document is stil on the way +_+
 2023/04/05 init project
 
 
-## license
+## License
 [GPLv3](LICENSE) and [why](why-gpl.md)
