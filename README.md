@@ -19,4 +19,4 @@ onnxruntime demo and document is stil on the way +_+
 
 
 ## license
-[GPLv3](LICENSE)
+[GPLv3](LICENSE) and [why](why-gpl.md)
