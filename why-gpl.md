@@ -15,4 +15,4 @@ At that time I thought the GPL was like a contagious cancer, until ..
 
 They shows no respect for the author of the code. 
 
-So I decided to support GPL forever, just defense my right.
+So I decided to support GPL forever.
