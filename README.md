@@ -8,7 +8,7 @@ Here is the graph to call these models:
 
 ![](./onnx-flow.jpg)
 
-Thus you can quantize the whole model and optimize operator kernel step by step.
+Thus you can quantize the model partially and optimize operator kernel step by step.
 
 ## more 
 onnxruntime demo and document is stil on the way +_+
