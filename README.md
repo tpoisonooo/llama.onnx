@@ -10,7 +10,7 @@ Here is the graph to call these models:
 
 Thus you can quantize the model partially and optimize operator kernel step by step.
 
-## more 
+## More 
 onnxruntime demo and document is stil on the way +_+
 
 2023/04/?? add script
