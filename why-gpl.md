@@ -1,5 +1,6 @@
 # Why GPL ?
-1. LLaMa using GPL, I have to follow its license.
+
+LLaMa using GPL, I have to follow its license.
 
 
 # How about release incremental part, such as Alpaca-LoRA weights ?
