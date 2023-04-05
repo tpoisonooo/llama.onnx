@@ -1,9 +1,10 @@
 # Why GPL ?
 
+## 1. Upstream
+
 LLaMa using GPL, I have to follow its license.
 
-
-# How about release incremental part, such as Alpaca-LoRA weights ?
+## 2. A Story
 
 In 2022, we plan to make [megflow](https://github.com/MegEngine/MegFlow/) public, I have spent 2 or 3 weeks to fullfill [FFmpeg License Compliance Checklist](https://ffmpeg.org/legal.html).
 
