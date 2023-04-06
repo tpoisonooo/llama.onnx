@@ -2,6 +2,7 @@
 
 I'm here to release llama-7B onnx model set, please download it
 * huggingface https://huggingface.co/tpoisonooo/llama.onnx/tree/main
+* BaiduYun https://pan.baidu.com/s/195axYNz79U6YkJLETNJmXw?pwd=onnx
 
 Here is the graph to call these models:
 
