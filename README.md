@@ -1,7 +1,7 @@
 # llama.onnx
 
 I'm here to release llama-7B onnx model set, please download it
-* huggingface (uploading) https://huggingface.co/tpoisonooo/llama.onnx/tree/main
+* huggingface https://huggingface.co/tpoisonooo/llama.onnx/tree/main
 
 Here is the graph to call these models:
 
