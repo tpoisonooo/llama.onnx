@@ -43,6 +43,7 @@ Bonjour.
 temperature=1.0
 total_tokens=2000
 top_p=1.0
+top_k=None
 repetition_penalty=1.0
 ```
 
