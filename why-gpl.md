@@ -10,7 +10,7 @@ In 2022, we plan to make [megflow](https://github.com/MegEngine/MegFlow/) public
 
 At that time I thought the GPL was like a contagious cancer, until ..
 
-* A few months ago, I released [deploee](platform.openmmlab.com/deploee/), but after only 4 days, I suffered a database attack. Well, this is just a **free public service**.
+* A few months ago, I released [deploee](https://platform.openmmlab.com/deploee/), but after only 4 days, I suffered a database attack. Well, this is just a **free public service**.
 * Days ago, an employee of [a large company](https://github.com/tencent/) deleted the commit history of a open source repo, and then sold it in his own community. After being exposed, he pretended to be a victim and yelled "you invaded my privacy and affected my work like this".
 
 ..
