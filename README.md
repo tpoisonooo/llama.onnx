@@ -16,7 +16,7 @@ These models converted from [alpaca huggingface](https://github.com/tatsu-lab/st
 
 ![](./onnx-flow.jpg)
 
-Try it with `onnxruntime` demo, no `torch` required, and the precision has been checked.
+Try `onnxruntime` demo, no `torch` required, and the precision has been checked.
 
 ```bash
 $ python3 -m pip install -r requirements.txt
