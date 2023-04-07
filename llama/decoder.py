@@ -21,6 +21,7 @@ def singleton(cls):
 
 @singleton
 class Embed:
+
     def __init__(self, onnxdir: str):
         # reload tokenizer
         assert os.path.isdir(onnxdir)
@@ -41,11 +42,13 @@ class Embed:
         output = dict()
         for i, tensor in enumerate(output_tensors):
             output[self.output_names[i]] = tensor
-        
+
         return output
+
 
 @singleton
 class Norm:
+
     def __init__(self, onnxdir: str):
         # reload tokenizer
         assert os.path.isdir(onnxdir)
@@ -66,12 +69,13 @@ class Norm:
         output = dict()
         for i, tensor in enumerate(output_tensors):
             output[self.output_names[i]] = tensor
-        
+
         return output
 
 
 @singleton
 class Head:
+
     def __init__(self, onnxdir: str):
         # reload tokenizer
         assert os.path.isdir(onnxdir)
@@ -92,11 +96,12 @@ class Head:
         output = dict()
         for i, tensor in enumerate(output_tensors):
             output[self.output_names[i]] = tensor
-        
+
         return output
 
 
 class Decoder:
+
     def __init__(self, onnxdir: str, nameformat: str, count: int = 32):
 
         # reload tokenizer
@@ -122,11 +127,10 @@ class Decoder:
         self._embed = Embed(onnxdir)
         self._norm = Norm(onnxdir)
         self._head = Head(onnxdir)
-        
 
     def decode(self, _inputs: dict, idx: int):
         assert len(self.inputs) == len(_inputs)
-        
+
         sess = self.sessions[idx]
         output_tensors = sess.run(None, _inputs)
         assert len(output_tensors) == len(self.output_names)
@@ -134,14 +138,12 @@ class Decoder:
         output = dict()
         for i, tensor in enumerate(output_tensors):
             output[self.output_names[i]] = tensor
-        
-        return output
 
+        return output
 
     def embed(self, input_ids: np.array):
         input_embed = self._embed.forward({'input': input_ids})['embed']
         return input_embed
-
 
     def norm_head(self, hidden: np.array):
         output = self._norm.forward({'input': hidden})['output']
