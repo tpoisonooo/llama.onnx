@@ -188,7 +188,6 @@ class Llama:
 
         # decoder backbone loop
         while True:
-
             if self.pastkeys is None:
                 # init cache
                 self.pastkeys = [None for i in range(self.DECODER_COUNT)]
@@ -207,7 +206,7 @@ class Llama:
             # Caution:
             # *** ValueError: sum(pvals[:-1].astype(np.float64)) > 1.0. The pvals array is cast to 64-bit floating point prior to checking the sum. Precision changes when casting may cause problems even if the sum of the original pvals is valid.
             next_token = npmultinominal2D(probs).astype(input_ids.dtype)
-            print(next_token)
+            logger.debug(next_token)
 
             input_ids = np.concatenate(
                 [input_ids, next_token.reshape((1, 1))], axis=1)

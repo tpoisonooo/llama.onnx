@@ -9,6 +9,7 @@ import os
 
 
 class Tokenizer:
+
     def __init__(self, model_path: str):
         # reload tokenizer
         assert os.path.isfile(model_path), model_path
