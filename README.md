@@ -1,7 +1,11 @@
 # llama.onnx
 
-I'm here to release llama-7B onnx model set, 
-thus you can quantize the model partially and optimize kernel step by step. 
+I'm here to release
+
+* llama 7B onnx models
+* and a 400-lines python script **without torch** to run it
+
+so you can quantize the model partially and optimize kernel step by step. 
 
 
 ## How to use
