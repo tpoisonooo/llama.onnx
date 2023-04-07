@@ -34,7 +34,7 @@ Bonjour.
 2023/04/05 init project
 
 
-## Note
+## Notes
 1. Any `logits_warper` or `logits_processor` or `BeamSearch` not implemented, so the result would be not good. **Please wait for nexxxxt version !!!**
 2. I have compared the output values of `onnxruntime-cpu` and `touch-cuda`, and the maximum error is 0.002, not bad
 3. The current state is equivalent to these configurations
