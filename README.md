@@ -55,4 +55,4 @@ repetition_penalty=1.0
 
 
 ## License
-Support [GPLv3](LICENSE) forever and [why](why-gpl.md)
+[GPLv3](LICENSE) and [why](why-gpl.md)
