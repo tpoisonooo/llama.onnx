@@ -15,6 +15,6 @@ At that time I thought the GPL was like a contagious cancer, until ..
 
 ..
 
-They shows no respect for the author of the code. 
+I have nothing against commercial companies using my code, they create jobs. It's just that some people shows no respect for the author of the code. 
 
-So I decided to support GPL forever.
+So I decided to support GPL.
