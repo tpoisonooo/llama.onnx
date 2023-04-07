@@ -1,7 +1,9 @@
-from llama import Tokenizer, Embed, Decoder
+from llama import Tokenizer, Decoder, npsoftmax, npmultinominal2D
 import numpy as np
 import os
 import pdb
+import argparse
+from loguru import logger
 
 PROMPT_DICT = {
     "prompt_input": (
@@ -17,23 +19,25 @@ PROMPT_DICT = {
 }
 PROMPT = PROMPT_DICT['prompt_no_input']
 
-class Llama:
-    def __init__(self, config: dict = {}):
-        text = 'bonjour'
-        # for AX
-        onnxdir = '/nvme/konghuanjun/llama.onnx/'
 
-        self.tokenizer = Tokenizer(os.path.join(onnxdir, 'tokenizer.model'))
-        self.embed = Embed(onnxdir)
+class Llama:
+    def __init__(self, onnxdir='models', config: dict = {}):
+        if not os.path.exists(onnxdir):
+            logger.error('{} not exist'.format(onnxdir))
+        
+        assert os.path.isdir(onnxdir)
+
         self.DECODER_COUNT = 32
+        # EOS token
+        self.FINISH_TOKEN = 2
+        self.tokenizer = Tokenizer(os.path.join(onnxdir, 'tokenizer.model'))
         self.init = Decoder(onnxdir, 'decoder-{}.onnx', self.DECODER_COUNT)
-        self.past = None
-        # self.past = Decoder(onnxdir, 'decoder-past-{}.onnx', self.DECODER_COUNT)
+        self.past = Decoder(onnxdir, 'decoder-past-{}.onnx', self.DECODER_COUNT)
         self.config = config
 
         # cache
-        self.pastkeys = [ None for i in range(self.DECODER_COUNT)]
-        self.pastvalues = [ None for i in range(self.DECODER_COUNT)]
+        self.pastkeys = None
+        self.pastvalues = None
 
 
     # Modified transformers.models.llama.modeling_llama._make_causal_mask with np.array
@@ -98,7 +102,11 @@ class Llama:
         return combined_attention_mask
 
 
-    def decoder_init(self, hidden: np.array):
+    def decode_init(self, input_ids: np.array):
+        # project to embed/higher dimension
+        hidden = self.init.embed(input_ids)
+        assert hidden.shape[-1] == 4096
+
         seqlen = hidden.shape[1]
         position_ids = np.arange(seqlen, dtype=np.int64).reshape((1, seqlen))
         attention_mask = np.ones((1, seqlen), dtype=np.float32)
@@ -117,27 +125,40 @@ class Llama:
             self.pastkeys[idx] = outputs['past_key']
             self.pastvalues[idx] = outputs['past_value']
 
-        pdb.set_trace()
         hidden = self.init.norm_head(hidden)
         return hidden
 
 
-    def decoder_past(self, hidden: np.array):
-        # TODO
-        seqlen = hidden.shape[1]
-        position_ids = np.arange(seqlen, dtype=np.int64).reshape((1, seqlen))
+    def decode_past(self, token: np.array):
+        # embed space
+        hidden = self.past.embed(token)
+        assert hidden.shape[-1] == 4096
 
-        attention_mask = np.ones((1, seqlen), dtype=np.float32)
+        pastlen = self.pastkeys[0].shape[-2]
+        seqlen = hidden.shape[1]
+        assert seqlen == 1
+        
+        position_ids = np.arange(seqlen, dtype=np.int64).reshape((1, seqlen))
+        position_ids[0][0] = pastlen
+
+        attention_mask = np.ones((1, seqlen+pastlen), dtype=np.float32)
+        attention_mask = self._prepare_decoder_attention_mask(attention_mask, (1, seqlen), hidden, pastlen)
 
         for idx in range(self.DECODER_COUNT):
+            past_key = self.pastkeys[idx]
+            past_value = self.pastvalues[idx]
+
             inputs = {
                 'hidden_in': hidden,
                 'attn_mask': attention_mask,
-                'position_ids': position_ids 
+                'position_ids': position_ids,
+                'past_key_in': past_key,
+                'past_value_in': past_value
             }
-            outputs = self.init.decode(inputs, idx)
+
+            outputs = self.past.decode(inputs, idx)
             
-            hidden = outputs['hidden_out']
+            hidden = outputs['hidden_out'] # [[[ 0.0221,  0.0120,  0.0007,  ..., -0.0614, -0.0625,  0.0494]]]
             self.pastkeys[idx] = outputs['past_key']
             self.pastvalues[idx] = outputs['past_value']
 
@@ -145,7 +166,7 @@ class Llama:
         return hidden
 
 
-    def generate(self, prompt: str = 'bonjour'):
+    def sample(self, prompt: str = 'bonjour'):
         prompt = prompt.strip()
         format_prompt = PROMPT.format_map({'instruction': prompt})
 
@@ -153,28 +174,53 @@ class Llama:
         input_ids = self.tokenizer.encode(format_prompt, True, False)
         input_ids = np.array(input_ids, dtype=np.int64).reshape((1, len(input_ids)))
 
-        # project to embed/higher dimension
-        input_embed = self.embed.forward({'input': input_ids})['embed']
-        assert input_embed.shape[-1] == 4096
-
-        # decoder backbone init
-        hidden = self.decoder_init(input_embed)
-
         # decoder backbone loop
-        while hidden.shape[1] < 2000:
-            hidden = self.decoder_past(hidden[:-1:])
+        while True:
 
-            # TODO kinds of waper not supported
+            if self.pastkeys is None:
+                # init cache
+                self.pastkeys = [ None for i in range(self.DECODER_COUNT)]
+                self.pastvalues = [ None for i in range(self.DECODER_COUNT)]
+                # decoder backbone init
+                logits = self.decode_init(input_ids)
+            
+            else:
 
-        # head
-        logits = self.head.forward({'input': hidden})['output']
-        assert logits.shape[-1] ==  32000 # vocab_size
+                logits = self.decode_past(next_token)
+
+            # split tail 
+            next_token_scores = logits[:, -1, :].astype(np.float64)
+            probs = npsoftmax(next_token_scores, axis=1)
+
+            # Caution: 
+            # *** ValueError: sum(pvals[:-1].astype(np.float64)) > 1.0. The pvals array is cast to 64-bit floating point prior to checking the sum. Precision changes when casting may cause problems even if the sum of the original pvals is valid.
+            next_token = npmultinominal2D(probs).astype(input_ids.dtype)
+            print(next_token)
+
+            input_ids = np.concatenate([input_ids, next_token.reshape((1,1))], axis=1)
+
+            if input_ids.shape[-1] > 2000 or next_token[0, 0] == self.FINISH_TOKEN:
+                break
 
         # decode
-        echo = self.tokenizer.decode(logits)
-        return echo
+        decoded = self.tokenizer.decode(input_ids[0].tolist())
+        out = str(decoded.split('Response:')[1])
+        logger.debug('Q: {} A: {}'.format(prompt, out))
+        return out
 
 
-llama = Llama()
-echo = llama.generate('bonjour')
-print(echo)
+def parse_args():
+    parser = argparse.ArgumentParser(description='llama.onnx onnxruntime demo')
+    parser.add_argument('onnxdir', help='llama 7B onnx model directory.')
+    parser.add_argument('prompt', help='prompt text.')
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+    llama = Llama(onnxdir=args.onnxdir)
+    llama.sample(args.prompt)
+
+if __name__ == '__main__':
+    main()

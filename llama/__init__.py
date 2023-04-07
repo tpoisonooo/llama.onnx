@@ -1,3 +1,3 @@
 from .tokenizer import Tokenizer
-from .embed import Embed
 from .decoder import Decoder
+from .utils import npsoftmax, npmultinominal2D
