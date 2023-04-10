@@ -10,11 +10,9 @@ So you can quantize llama partially and optimize kernel step by step.
 
 ## Usage
 
-:rocket: New version reduced 50% model size to 26GB, uploading [in this PR](https://github.com/tpoisonooo/llama.onnx/pull/6).
+:rocket: New version reduced 50% model size to 26GB
 
-Download old 53GB version here
-* huggingface https://huggingface.co/tpoisonooo/llama.onnx/tree/main
-* BaiduYun https://pan.baidu.com/s/195axYNz79U6YkJLETNJmXw?pwd=onnx
+* huggingface https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main
 
 Here is the graph to call them:
 
@@ -31,7 +29,9 @@ Bonjour.
 
 ## Updates
 
-2023/04/?? reduce onnx model size
+2023/04/?? support `memory pool`, run within 2GB memory
+
+2023/04/10 reduce onnx model size to 26GB
 
 2023/04/10 support `temperature` add `topk` logits warp
 
