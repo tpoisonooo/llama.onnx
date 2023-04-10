@@ -1,6 +1,7 @@
 import numpy as np
 from loguru import logger
 
+# refers to https://github.com/huggingface/transformers/blob/main/src/transformers/generation/logits_process.py 
 def warp_topk(tensor: np.array, topk: int, fill_value = -float("Inf")):
     if topk is None or topk <= 0:
         return tensor
