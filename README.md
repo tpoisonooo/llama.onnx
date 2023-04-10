@@ -3,7 +3,7 @@
 Features
 
 * release llama 7B onnx models
-* and a 400-lines python script to run it
+* and a 400-lines onnxruntime demo
 * neither `torch` nor `transformers` required
 
 So you can quantize llama partially and optimize kernel step by step. 
