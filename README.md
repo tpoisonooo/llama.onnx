@@ -27,7 +27,9 @@ Bonjour.
 
 ## Updates
 
-2023/04/?? add memory plan, add temperature warp
+2023/04/?? reduce onnx model size
+
+2023/04/10 support `temperature` add `topk` logits warp
 
 2023/04/07 add [onnxruntime demo](demo-single.py) and `tokenizer.model` (don't forget to download it)
 
@@ -35,14 +37,14 @@ Bonjour.
 
 
 ## Notes
-1. Any `logits_warper` or `logits_processor` or `BeamSearch` not implemented, so the result would be not good. **Please wait for nexxxxt version !!!**
+1. Any `logits_processor` or `BeamSearch` not implemented, so the result would be not good
 2. I have compared the output values of `onnxruntime-cpu` and `torch-cuda`, and the maximum error is 0.002, not bad
 3. The current state is equivalent to these configurations
 ```bash
-temperature=1.0
+temperature=0.1
 total_tokens=2000
 top_p=1.0
-top_k=None
+top_k=40
 repetition_penalty=1.0
 ```
 
