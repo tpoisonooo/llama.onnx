@@ -79,8 +79,9 @@ repetition_penalty=1.0
 
 
 ## Acknowlegements
-* [alpaca](https://github.com/tatsu-lab/stanford_alpaca)
 * [llama](https://github.com/facebookresearch/llama)
+* [alpaca](https://github.com/tatsu-lab/stanford_alpaca)
+* [alpaca-lora](https://github.com/tloen/alpaca-lora)
 * [transformers](https://github.com/huggingface/transformers)
 * [peft](https://github.com/huggingface/peft)
 * [Chinese-LLaMA-Alpaca](https://github.com/ymcui/Chinese-LLaMA-Alpaca)
