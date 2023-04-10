@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def npsoftmax(x, axis):
     y = x - np.max(x, axis=axis, keepdims=True)
     return np.exp(y) / np.sum(np.exp(y), axis=axis, keepdims=True)

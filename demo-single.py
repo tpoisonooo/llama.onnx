@@ -1,4 +1,4 @@
-from llama import Tokenizer, Decoder, npsoftmax, npmultinominal2D
+from llama import Tokenizer, Decoder, npsoftmax, npmultinominal2D, warp_temperature, warp_topk
 import numpy as np
 import os
 import pdb
@@ -20,7 +20,6 @@ PROMPT = PROMPT_DICT['prompt_no_input']
 
 
 class Llama:
-
     def __init__(self, onnxdir='models', config: dict = {}):
         if not os.path.exists(onnxdir):
             logger.error('{} not exist'.format(onnxdir))
@@ -177,6 +176,11 @@ class Llama:
         hidden = self.init.norm_head(hidden)
         return hidden
 
+    def apply_warp(self, tensor: np.array):
+        tensor = warp_temperature(tensor, self.config['temperature'])
+        tensor = warp_topk(tensor, self.config['topk'])
+        return tensor
+
     def sample(self, prompt: str = 'bonjour'):
         prompt = prompt.strip()
         format_prompt = PROMPT.format_map({'instruction': prompt})
@@ -200,8 +204,12 @@ class Llama:
                 logits = self.decode_past(next_token)
 
             # split tail
-            next_token_scores = logits[:, -1, :].astype(np.float64)
-            probs = npsoftmax(next_token_scores, axis=1)
+            next_token_scores = logits[:, -1, :]
+
+            # wrap logits for better output
+            next_token_scores = self.apply_warp(next_token_scores)
+
+            probs = npsoftmax(next_token_scores.astype(np.float64), axis=1)
 
             # Caution:
             # *** ValueError: sum(pvals[:-1].astype(np.float64)) > 1.0. The pvals array is cast to 64-bit floating point prior to checking the sum. Precision changes when casting may cause problems even if the sum of the original pvals is valid.
@@ -211,7 +219,7 @@ class Llama:
             input_ids = np.concatenate(
                 [input_ids, next_token.reshape((1, 1))], axis=1)
 
-            if input_ids.shape[-1] > 2000 or next_token[
+            if input_ids.shape[-1] >= self.config['max'] or next_token[
                     0, 0] == self.FINISH_TOKEN:
                 break
 
@@ -226,13 +234,38 @@ def parse_args():
     parser = argparse.ArgumentParser(description='llama.onnx onnxruntime demo')
     parser.add_argument('onnxdir', help='llama 7B onnx model directory.')
     parser.add_argument('prompt', help='prompt text.')
+    parser.add_argument(
+        '--temperature',
+        default=0.1,
+        type=float,
+        help=
+        'factor to scale up logits, 1.0 means no warp. use `0.1` by default.')
+    parser.add_argument(
+        '--topk',
+        default=40,
+        type=int,
+        help=
+        'filter k high score values from logits, None means no filter. 40 by default.'
+    )
+    parser.add_argument(
+        '--max',
+        default=2000,
+        type=int,
+        help=
+        'stop condition. default value is 2000, it would stop until len(output_token)==2000.'
+    )
     args = parser.parse_args()
     return args
 
 
 def main():
     args = parse_args()
-    llama = Llama(onnxdir=args.onnxdir)
+    llama = Llama(onnxdir=args.onnxdir,
+                  config={
+                      'temperature': args.temperature,
+                      'topk': args.topk,
+                      'max': args.max
+                  })
     llama.sample(args.prompt)
 
 
