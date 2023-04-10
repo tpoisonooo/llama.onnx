@@ -10,7 +10,7 @@ So you can quantize llama partially and optimize kernel step by step.
 
 ## Usage
 
-:rocket: New version reduced 50% model size to 26GB
+:rocket: New version reduced 50% model size to 26GB, download it here
 
 * huggingface https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main
 
