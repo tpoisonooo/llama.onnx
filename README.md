@@ -3,7 +3,7 @@
 Features
 
 * release llama 7B onnx models
-* and a 400-lines onnxruntime demo
+* and a 400-lines onnxruntime alpaca demo
 * neither `torch` nor `transformers` required
 
 So you can quantize llama partially and optimize kernel step by step. 
