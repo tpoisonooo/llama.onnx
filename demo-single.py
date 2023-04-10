@@ -206,7 +206,7 @@ class Llama:
             # split tail
             next_token_scores = logits[:, -1, :]
 
-            # wrap logits for better output
+            # wrap logits for better token
             next_token_scores = self.apply_warp(next_token_scores)
 
             probs = npsoftmax(next_token_scores.astype(np.float64), axis=1)
