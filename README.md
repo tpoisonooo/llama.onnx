@@ -12,7 +12,7 @@ So you can quantize llama partially and optimize kernel step by step.
 
 New version reduced 50% model size to 26GB, uploading [in this PR](https://github.com/tpoisonooo/llama.onnx/pull/6).
 
-Please download old version here
+Download old 53GB version here
 * huggingface https://huggingface.co/tpoisonooo/llama.onnx/tree/main
 * BaiduYun https://pan.baidu.com/s/195axYNz79U6YkJLETNJmXw?pwd=onnx
 
