@@ -5,7 +5,7 @@ Features
 * release llama 7B onnx models
 * and a 400-lines onnxruntime alpaca demo
   * neither `torch` nor `transformers` required
-  * support memory pool, works on 2GB laptop/PC
+  * support memory pool, works on 2GB laptop/PC (very slow)
 
 So you can quantize llama partially and optimize kernel step by step. 
 
