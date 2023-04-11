@@ -33,7 +33,7 @@ Download onnx models here:
 | Precision | Size | URL |
 | :-: | :-: | :-: |
 | fp32 | 26GB | https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main |
-| fp16 | 13GB | https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16 (uploading) |
+| fp16 | 13GB | https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16 |
 
 Here is the graph to call them:
 
