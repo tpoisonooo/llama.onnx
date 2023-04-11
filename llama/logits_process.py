@@ -8,7 +8,7 @@ def warp_topk(tensor: np.array, topk: int, fill_value = -float("Inf")):
     assert len(tensor.shape) == 2
     
     if topk > tensor.shape[-1]:
-        logger.warn('topk value {} bigger than tensor shape {}, updated'.format(topk, tensor.shape))
+        logger.warning('topk value {} bigger than tensor shape {}, updated'.format(topk, tensor.shape))
         topk = min(topk, tensor.shape[-1])
 
     for idx, pval in enumerate(tensor):

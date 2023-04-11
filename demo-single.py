@@ -114,6 +114,15 @@ class Llama:
 
         return combined_attention_mask
 
+    def convert_to_fp16(self, inputs):
+        outputs = dict()
+        for k, v in inputs.items():
+            if v.dtype == np.float32:
+                outputs[k] = v.astype(np.float16)
+            else:
+                outputs[k] = v
+        return outputs
+
     def decode(self, token: np.array):
         # embed space
         hidden = self.decoder.embed(token)
@@ -154,6 +163,8 @@ class Llama:
                     'past_value_in': past_value
                 }
 
+            if self.config['fp16']:
+                inputs = self.convert_to_fp16(inputs)
             outputs = self.decoder.decode(inputs, idx)
 
             hidden = outputs[
@@ -240,18 +251,24 @@ def parse_args():
         default=32,
         type=float,
         help='onnxruntime memory pool size. default value is 32GB')
+    parser.add_argument('--fp16',
+                        default=True,
+                        type=bool,
+                        help='enable fp16 inference, default True.')
     args = parser.parse_args()
     return args
 
 
 def main():
     args = parse_args()
+    logger.warning(args)
     llama = Llama(onnxdir=args.onnxdir,
                   config={
                       'temperature': args.temperature,
                       'topk': args.topk,
                       'max': args.max,
-                      'poolsize': args.poolsize
+                      'poolsize': args.poolsize,
+                      'fp16': args.fp16
                   })
     llama.sample(args.prompt)
 

@@ -81,7 +81,7 @@ class MemoryPoolSimple:
         
         total = psutil.virtual_memory().total / (1024 * 1024 * 1024)
         if total > 0 and total < sum_need:
-            logger.warn('virtual_memory not enough, require {}, try `--poolsize {}`'.format(sum_need, math.floor(total)))
+            logger.warning('virtual_memory not enough, require {}, try `--poolsize {}`'.format(sum_need, math.floor(total)))
 
 
     def fetch(self, key: str):
