@@ -1,0 +1,2 @@
+onnxconverter-common==1.13.0
+onnxsim==0.4.19
