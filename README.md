@@ -1,6 +1,23 @@
 # llama.onnx
 
-Features
+## News
+
+04/?? add mixed-precision quantization
+
+04/11 add 13GB onnx-fp16 models
+
+04/11 add memory pool, support 2GB RAM laptop :star:
+
+04/10 reduce onnx model size to 26GB
+
+04/10 support `temperature` add `topk` logits warp
+
+04/07 add [onnxruntime demo](demo-single.py)
+
+04/05 init project
+
+
+## Features
 
 * release llama 7B onnx models
 * and a 400-lines onnxruntime alpaca demo
@@ -11,9 +28,12 @@ So you can quantize llama partially and optimize kernel step by step.
 
 ## Usage
 
-:rocket: New version reduced 50% model size to 26GB, download it here
+Download onnx models here:
 
-* fp32 huggingface https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main
+| Precision | Size | URL |
+| :-: | :-: | :-: |
+| fp32 | 26GB | https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main |
+| fp16 | 13GB | https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16 (uploading) |
 
 Here is the graph to call them:
 
@@ -30,20 +50,6 @@ $ python3 demo-single.py ${ONNX_DIR} "bonjour" --poolsize 4
 ..
 Bonjour.
 ```
-
-## Updates
-
-2023/04/?? add mixed-precision quantization
-
-2023/04/11 add memory pool, support 2GB PC/laptop
-
-2023/04/10 reduce onnx model size to 26GB
-
-2023/04/10 support `temperature` add `topk` logits warp
-
-2023/04/07 add [onnxruntime demo](demo-single.py) and `tokenizer.model` (do not forget to download it)
-
-2023/04/05 init project
 
 
 ## Export onnx
@@ -72,6 +78,16 @@ Checkout transformers to this [hacking branch](https://github.com/tpoisonooo/tra
 
 ```bash
 $ python3 tools/export-onnx.py ${PATH_ALPACA_7B}
+```
+
+**STEP3 convert to fp16**
+
+Use `onnxconverter-common.float16`
+
+```bash
+$ cd tools
+$ python3 -m pip install -r requirements.txt
+$ python3 convert-fp32-to-fp16.py ${FP32_PATH} ${FP16_PATH}
 ```
 
 ## Notes
