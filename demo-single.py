@@ -30,14 +30,12 @@ class Llama:
         # EOS token
         self.FINISH_TOKEN = 2
         self.tokenizer = Tokenizer(os.path.join(onnxdir, 'tokenizer.model'))
-        self.init = Decoder(onnxdir, 'decoder-{}.onnx', self.DECODER_COUNT)
-        self.past = Decoder(onnxdir, 'decoder-past-{}.onnx',
-                            self.DECODER_COUNT)
+        self.decoder = Decoder(onnxdir, 'decoder-merge-{}.onnx', self.DECODER_COUNT)
         self.config = config
 
         # cache
-        self.pastkeys = None
-        self.pastvalues = None
+        self.pastkeys = [None for i in range(self.DECODER_COUNT)]
+        self.pastvalues = [None for i in range(self.DECODER_COUNT)]
 
     # Modified transformers.models.llama.modeling_llama._make_causal_mask with np.array
     def _make_causal_mask(self,
@@ -111,41 +109,16 @@ class Llama:
 
         return combined_attention_mask
 
-    def decode_init(self, input_ids: np.array):
-        # project to embed/higher dimension
-        hidden = self.init.embed(input_ids)
-        assert hidden.shape[-1] == 4096
-
-        seqlen = hidden.shape[1]
-        position_ids = np.arange(seqlen, dtype=np.int64).reshape((1, seqlen))
-        attention_mask = np.ones((1, seqlen), dtype=np.float32)
-        attention_mask = self._prepare_decoder_attention_mask(
-            attention_mask, (1, seqlen), hidden, 0)
-
-        for idx in range(self.DECODER_COUNT):
-            inputs = {
-                'hidden_in': hidden,
-                'attn_mask': attention_mask,
-                'position_ids': position_ids
-            }
-
-            outputs = self.init.decode(inputs, idx)
-
-            hidden = outputs['hidden_out']
-            self.pastkeys[idx] = outputs['past_key']
-            self.pastvalues[idx] = outputs['past_value']
-
-        hidden = self.init.norm_head(hidden)
-        return hidden
-
-    def decode_past(self, token: np.array):
+    def decode(self, token: np.array):
         # embed space
-        hidden = self.past.embed(token)
+        hidden = self.decoder.embed(token)
         assert hidden.shape[-1] == 4096
 
-        pastlen = self.pastkeys[0].shape[-2]
+        if self.pastkeys[0] is None:
+            pastlen = 0
+        else:
+            pastlen = self.pastkeys[0].shape[-2]
         seqlen = hidden.shape[1]
-        assert seqlen == 1
 
         position_ids = np.arange(seqlen, dtype=np.int64).reshape((1, seqlen))
         position_ids[0][0] = pastlen
@@ -158,22 +131,32 @@ class Llama:
             past_key = self.pastkeys[idx]
             past_value = self.pastvalues[idx]
 
-            inputs = {
-                'hidden_in': hidden,
-                'attn_mask': attention_mask,
-                'position_ids': position_ids,
-                'past_key_in': past_key,
-                'past_value_in': past_value
-            }
+            if past_key is None:
+                zero_tensor = np.zeros((1,32,0,128), dtype=np.float32)
+                inputs = {
+                    'hidden_in': hidden,
+                    'attn_mask': attention_mask,
+                    'position_ids': position_ids,
+                    'past_key_in': zero_tensor,
+                    'past_value_in': zero_tensor
+                }
+            else:
+                inputs = {
+                    'hidden_in': hidden,
+                    'attn_mask': attention_mask,
+                    'position_ids': position_ids,
+                    'past_key_in': past_key,
+                    'past_value_in': past_value
+                }
 
-            outputs = self.past.decode(inputs, idx)
+            outputs = self.decoder.decode(inputs, idx)
 
             hidden = outputs[
                 'hidden_out']  # [[[ 0.0221,  0.0120,  0.0007,  ..., -0.0614, -0.0625,  0.0494]]]
             self.pastkeys[idx] = outputs['past_key']
             self.pastvalues[idx] = outputs['past_value']
 
-        hidden = self.init.norm_head(hidden)
+        hidden = self.decoder.norm_head(hidden)
         return hidden
 
     def apply_warp(self, tensor: np.array):
@@ -191,17 +174,10 @@ class Llama:
             (1, len(input_ids)))
 
         # decoder backbone loop
+        next_token = input_ids
         while True:
-            if self.pastkeys is None:
-                # init cache
-                self.pastkeys = [None for i in range(self.DECODER_COUNT)]
-                self.pastvalues = [None for i in range(self.DECODER_COUNT)]
-                # decoder backbone init
-                logits = self.decode_init(input_ids)
-
-            else:
-
-                logits = self.decode_past(next_token)
+            # decoder backbone
+            logits = self.decode(next_token)
 
             # split tail
             next_token_scores = logits[:, -1, :]
