@@ -4,7 +4,8 @@ Features
 
 * release llama 7B onnx models
 * and a 400-lines onnxruntime alpaca demo
-* neither `torch` nor `transformers` required
+  * neither `torch` nor `transformers` required
+  * support memory pool, works on 2GB laptop/PC
 
 So you can quantize llama partially and optimize kernel step by step. 
 
@@ -24,12 +25,17 @@ Try `onnxruntime` demo, no `torch` required, and the precision has been checked.
 $ python3 -m pip install -r requirements.txt
 $ python3 demo-single.py ${ONNX_DIR} "bonjour"
 ..
+# If you only have 4GB memory, use `--poolsize`
+$ python3 demo-single.py ${ONNX_DIR} "bonjour" --poolsize 4
+..
 Bonjour.
 ```
 
 ## Updates
 
-2023/04/?? support `memory pool`, run within 2GB memory
+2023/04/?? add mixed-precision quantization
+
+2023/04/11 add memory pool, support 2GB PC/laptop
 
 2023/04/10 reduce onnx model size to 26GB
 

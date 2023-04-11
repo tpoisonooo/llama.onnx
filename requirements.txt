@@ -1,3 +1,4 @@
 onnxruntime
 loguru
 sentencepiece
+psutil
