@@ -1,4 +1,4 @@
-from llama import Tokenizer, Decoder, npsoftmax, npmultinominal2D, warp_temperature, warp_topk
+from llama import Tokenizer, Decoder, MemoryPoolSimple, npsoftmax, npmultinominal2D, warp_temperature, warp_topk
 import numpy as np
 import os
 import pdb
@@ -30,12 +30,17 @@ class Llama:
         # EOS token
         self.FINISH_TOKEN = 2
         self.tokenizer = Tokenizer(os.path.join(onnxdir, 'tokenizer.model'))
-        self.decoder = Decoder(onnxdir, 'decoder-merge-{}.onnx', self.DECODER_COUNT)
+
+        pool = MemoryPoolSimple(config['poolsize'])
+        self.decoder = Decoder(pool, onnxdir, 'decoder-merge-{}.onnx',
+                               self.DECODER_COUNT)
         self.config = config
 
         # cache
         self.pastkeys = [None for i in range(self.DECODER_COUNT)]
         self.pastvalues = [None for i in range(self.DECODER_COUNT)]
+
+        pool.check()
 
     # Modified transformers.models.llama.modeling_llama._make_causal_mask with np.array
     def _make_causal_mask(self,
@@ -132,7 +137,7 @@ class Llama:
             past_value = self.pastvalues[idx]
 
             if past_key is None:
-                zero_tensor = np.zeros((1,32,0,128), dtype=np.float32)
+                zero_tensor = np.zeros((1, 32, 0, 128), dtype=np.float32)
                 inputs = {
                     'hidden_in': hidden,
                     'attn_mask': attention_mask,
@@ -225,11 +230,16 @@ def parse_args():
     )
     parser.add_argument(
         '--max',
-        default=2000,
+        default=50,
         type=int,
         help=
         'stop condition. default value is 2000, it would stop until len(output_token)==2000.'
     )
+    parser.add_argument(
+        '--poolsize',
+        default=32,
+        type=float,
+        help='onnxruntime memory pool size. default value is 32GB')
     args = parser.parse_args()
     return args
 
@@ -240,7 +250,8 @@ def main():
                   config={
                       'temperature': args.temperature,
                       'topk': args.topk,
-                      'max': args.max
+                      'max': args.max,
+                      'poolsize': args.poolsize
                   })
     llama.sample(args.prompt)
 

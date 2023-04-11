@@ -1,4 +1,19 @@
 import numpy as np
+from threading import Lock
+
+def singleton(cls):
+    _instance = {}
+    _instance_lock = Lock()
+
+    def inner(*args, **kwargs):
+        if cls not in _instance:
+            with _instance_lock:
+                if cls not in _instance:
+                    _instance[cls] = cls(*args, **kwargs)
+        return _instance[cls]
+
+    return inner
+
 
 def npsoftmax(x, axis):
     y = x - np.max(x, axis=axis, keepdims=True)
