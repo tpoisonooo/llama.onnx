@@ -19,12 +19,17 @@
 
 ## Features
 
-* release llama 7B onnx models
-* and a 400-lines onnxruntime alpaca demo
+* Release llama 7B onnx models
+* With a 400-lines onnxruntime alpaca demo
   * neither `torch` nor `transformers` required
   * support memory pool, works on 2GB laptop/PC (very slow :turtle:)
 
-So you can quantize llama partially and optimize kernel step by step. 
+Why do this ?
+1. **Visualization**. `graphviz` crashed on llama model. LLM visualization tool must support nest or operator folding feature
+2. **Quatization**. LLM often repeat itself, just like [fractal](https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/fractal_small.gif). For llama quantization, loading part of decoder backbone would be enough (400MB). It could be quantized partially
+3. **Embeded device**. Small board IO error occurs when `dd` a big single file
+4. **Distributed system**. Inference LLM on many hybrid (FPGA/NPU/GPGPU) devices would be simple
+5. **onnx tools**. Device manufacturer has support onnx well, there is no reason to neglect it
 
 ## Usage
 
