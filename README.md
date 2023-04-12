@@ -48,12 +48,15 @@ Try `onnxruntime` demo, no `torch` required, and the precision has been checked.
 
 ```bash
 $ python3 -m pip install -r requirements.txt
-$ python3 demo-single.py ${ONNX_DIR} "bonjour"
+$ python3 demo-single.py ${FP16_ONNX_DIR} "bonjour"
 ..
 # If you only have 4GB memory, use `--poolsize`
-$ python3 demo-single.py ${ONNX_DIR} "bonjour" --poolsize 4
+$ python3 demo-single.py ${FP16_ONNX_DIR} "bonjour" --poolsize 4
 ..
 Bonjour.
+
+# Try more options
+$ python3 demo-single.py --help
 ```
 
 
