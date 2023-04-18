@@ -2,7 +2,7 @@
 
 ## News
 
-04/?? add model convert to ncnn
+04/?? implement llama.ncnn
 
 04/18 export mixed-precision quantization parameter from [GPTQ-for-llama](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
 
