@@ -4,7 +4,7 @@
 
 04/?? implement llama.ncnn
 
-04/18 export mixed-precision quantization parameter from [GPTQ-for-llama](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
+04/18 export mixed-precision quant table from [GPTQ-for-llama](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
 
 04/11 add 13GB onnx-fp16 models
 
