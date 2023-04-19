@@ -61,9 +61,9 @@ Compare with baseline, we removed zero_point.
 | Version | Option | Maxium error | Zero point | Observe
 | :-: | :-: | :-: | :-: | :-: |
 | baseline | wbit=4,groupsize=128,minq=0,maxq=15 | 6e5 | Y | N |
-| observe | wbit=4,groupsize=128/64,minq=-7,maxq=7 | 9e5 | N | N |
-| observe | wbit=4,groupsize=128/64,minq=-7,maxq=7 | 4e5 | N | Y |
-| observe | wbit=4,groupsize=128/64,minq=-8,maxq=7 | 7e5 | fixed value | N |
+| 1 | wbit=4,groupsize=128/64,minq=-7,maxq=7 | 9e5 | N | N |
+| 2 | wbit=4,groupsize=128/64,minq=-7,maxq=7 | 4e5 | N | Y |
+| 3 | wbit=4,groupsize=128/64,minq=-8,maxq=7 | 7e5 | fixed value | N |
 
 About `minq=-8`, you can also use <qmin=-8, qmax=7, zp=0.5*scale> for better precison, check [this branch](https://github.com/tpoisonooo/GPTQ-for-LLaMa/tree/use-fixed-zp) QAQ
 
