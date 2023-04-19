@@ -4,7 +4,9 @@
 
 04/?? deploy <llama.onnx, quant table> to aarch64
 
-04/18 export mixed-precision quant table from [GPTQ-for-LLaMa](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189) and [guidance](docs/remove-GPTQ-zero-point.md)
+04/19  [remove GPTQ zero point guidance](docs/remove-GPTQ-zero-point.md)
+
+04/18 export mixed-precision quant table from [GPTQ-for-LLaMa](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
 
 04/11 add 13GB onnx-fp16 models
 
