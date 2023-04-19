@@ -4,7 +4,7 @@
 
 04/?? deploy <llama.onnx, quant table> to aarch64
 
-04/18 export mixed-precision quant table from [GPTQ-for-llama](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
+04/18 export mixed-precision quant table from [GPTQ-for-LLaMa](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189) and [guidance](docs/quant-error-analysis.md)
 
 04/11 add 13GB onnx-fp16 models
 
@@ -61,7 +61,6 @@ Bonjour.
 $ python3 demo-single.py --help
 ```
 
-
 ## Export onnx
 
 **STEP1 Convert to HF format**
@@ -100,6 +99,12 @@ $ python3 -m pip install -r requirements.txt
 $ python3 convert-fp32-to-fp16.py ${FP32_PATH} ${FP16_PATH}
 ```
 
+## Quantization
+
+Mixed-precision kernel optimization is on the way. 
+
+[Here](docs/quant-error-analysis.md) is the guidence using `GPTQ-for-llama --observe` to export quantization parameters.
+
 ## Notes
 1. Any `logits_processor` or `BeamSearch` not implemented, so the result would be not good
 2. I have compared the output values of `onnxruntime-cpu` and `torch-cuda`, and the maximum error is 0.002, not bad
@@ -123,4 +128,4 @@ repetition_penalty=1.0
 
 
 ## License
-[GPLv3](why-gpl.md)
+[GPLv3](docs/why-gpl.md)
