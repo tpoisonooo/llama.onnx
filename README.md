@@ -2,7 +2,7 @@
 
 ## News
 
-04/?? implement llama.ncnn
+04/?? deploy <llama.onnx, quant table> to aarch64
 
 04/18 export mixed-precision quant table from [GPTQ-for-llama](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189)
 
