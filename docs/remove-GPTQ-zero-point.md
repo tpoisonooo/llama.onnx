@@ -52,7 +52,7 @@ Cherry-pick this [PR](https://github.com/tpoisonooo/GPTQ-for-LLaMa/tree/remove-z
 
 You can see, error trend not changed while the maximum error arised 50%, from 6e5 to 9e5.
 
-So enable `--observe`, topk=40 according to former conclusion.
+So enable `--observe`, [topk=40](https://github.com/qwopqwop200/GPTQ-for-LLaMa/blob/fcf403ffff35b1d28fdb00d0d01f4dbd3fc11c31/gptq.py#L14) according to former conclusion.
 
 ![](../images/quant-baseline-sym-observe.jpeg)
 
