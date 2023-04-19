@@ -4,7 +4,7 @@
 
 04/?? deploy <llama.onnx, quant table> to aarch64
 
-04/18 export mixed-precision quant table from [GPTQ-for-LLaMa](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189) and [guidance](docs/quant-error-analysis.md)
+04/18 export mixed-precision quant table from [GPTQ-for-LLaMa](https://github.com/qwopqwop200/GPTQ-for-LLaMa/pull/189) and [guidance](docs/remove-GPTQ-zero-point.md)
 
 04/11 add 13GB onnx-fp16 models
 
@@ -101,9 +101,7 @@ $ python3 convert-fp32-to-fp16.py ${FP32_PATH} ${FP16_PATH}
 
 ## Quantization
 
-Mixed-precision kernel optimization is on the way. 
-
-[Here](docs/quant-error-analysis.md) is the guidence using `GPTQ-for-llama --observe` to export quantization parameters.
+Mixed-precision kernel optimization is on the way. [Here](docs/remove-GPTQ-zero-point.md) is a part of guidance.
 
 ## Notes
 1. Any `logits_processor` or `BeamSearch` not implemented, so the result would be not good
