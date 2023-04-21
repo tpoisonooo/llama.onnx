@@ -91,7 +91,7 @@ Checkout transformers to this [hacking branch](https://github.com/tpoisonooo/tra
 $ python3 tools/export-onnx.py ${PATH_ALPACA_7B}
 ```
 
-**STEP3 convert to fp16**
+**STEP3 convert to fp16/tvm**
 
 Use `onnxconverter-common.float16`
 
@@ -99,6 +99,12 @@ Use `onnxconverter-common.float16`
 $ cd tools
 $ python3 -m pip install -r requirements.txt
 $ python3 convert-fp32-to-fp16.py ${FP32_PATH} ${FP16_PATH}
+```
+
+Or use `relay.vm` to convert tvm
+```bash
+$ cd tools
+$ python3 convert-to-tvm.py ${ONNX_PATH} ${OUT_DIR}
 ```
 
 ## Quantization
