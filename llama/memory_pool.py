@@ -1,37 +1,11 @@
 from loguru import logger
 from .utils import singleton
-import onnxruntime as ort
 import numpy as np
 import os
 import sys
 
 import psutil
 import math
-
-class OrtWrapper:
-    def __init__(self, onnxfile: str):
-        assert os.path.exists(onnxfile)
-        self.onnxfile = onnxfile
-        self.sess = ort.InferenceSession(onnxfile)
-        self.inputs = self.sess.get_inputs()
-        outputs = self.sess.get_outputs()
-        self.output_names = [output.name for output in outputs]
-        logger.debug('{} loaded'.format(onnxfile))
-
-    def forward(self, _inputs: dict):
-        assert len(self.inputs) == len(_inputs)
-        output_tensors = self.sess.run(None, _inputs)
-
-        assert len(output_tensors) == len(self.output_names)
-        output = dict()
-        for i, tensor in enumerate(output_tensors):
-            output[self.output_names[i]] = tensor
-
-        return output
-    
-    def __del__(self):
-        logger.debug('{} unload'.format(self.onnxfile))
-
 
 @singleton
 class MemoryPoolSimple:
@@ -42,6 +16,7 @@ class MemoryPoolSimple:
         self.max_size = maxGB * 1024 * 1024 * 1024
         self.wait_map = {}
         self.active_map = {}
+        self.backend = 'onnxruntime'
 
     def submit(self, key: str, onnx_filepath: str):
         if not os.path.exists(onnx_filepath):
@@ -102,5 +77,13 @@ class MemoryPoolSimple:
             del self.active_map[biggest_k]
             used_size, biggest_k = self.used()
         
-        self.active_map[key] = OrtWrapper(onnx)
+        if self.backend == 'onnxruntime':
+            from .ort_wrapper import OrtWrapper
+            self.active_map[key] = OrtWrapper(onnx)
+        elif self.backend == 'tensorrt':
+            from .trt_wrapper import TrtWrapper
+            self.active_map[key] = TrtWrapper(onnx)
+        else:
+            raise Exception('unknown backend {}'.format(self.backend))
+
         return self.active_map[key]
