@@ -32,7 +32,7 @@ class Llama:
         self.tokenizer = Tokenizer(os.path.join(onnxdir, 'tokenizer.model'))
 
         pool = MemoryPoolSimple(config['poolsize'])
-        self.decoder = Decoder(pool, onnxdir, 'decoder-merge-{}.onnx',
+        self.decoder = Decoder(pool, onnxdir, 'decoder-merge-{}.engine',
                                self.DECODER_COUNT)
         self.config = config
 
@@ -70,7 +70,7 @@ class Llama:
 
     # Modified transformers.models.llama.modeling_llama._expand_mask with np.array
     def _expand_mask(self, mask, dtype, tgt_len=None):
-        """  
+        """
         Expands attention_mask from `[bsz, seq_len]` to `[bsz, 1, tgt_seq_len, src_seq_len]`.  
         """
         bsz, src_len = mask.shape
@@ -194,7 +194,6 @@ class Llama:
         while True:
             # decoder backbone
             logits = self.decode(next_token)
-
             # split tail
             next_token_scores = logits[:, -1, :]
 
@@ -248,13 +247,17 @@ def parse_args():
     )
     parser.add_argument(
         '--poolsize',
-        default=32,
+        default=5,
         type=float,
         help='onnxruntime memory pool size. default value is 32GB')
     parser.add_argument('--fp16',
                         default=True,
                         type=bool,
                         help='enable fp16 inference, default True.')
+    parser.add_argument('--backend',
+                        default="onnxruntime",
+                        type=str,
+                        help='execution backend, onnxruntime or tensorrt.')                  
     args = parser.parse_args()
     return args
 

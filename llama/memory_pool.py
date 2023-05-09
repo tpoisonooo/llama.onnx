@@ -77,7 +77,10 @@ class MemoryPoolSimple:
             del self.active_map[biggest_k]
             used_size, biggest_k = self.used()
         
-        if self.backend == 'onnxruntime':
+        if 'decode' in key:
+            from .trt_wrapper import TrtWrapper
+            self.active_map[key] = TrtWrapper(onnx)
+        elif self.backend == 'onnxruntime':
             from .ort_wrapper import OrtWrapper
             self.active_map[key] = OrtWrapper(onnx)
         elif self.backend == 'tensorrt':

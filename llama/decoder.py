@@ -25,7 +25,22 @@ class Decoder:
 
         handler = self._pool.fetch(key)
         outputs = handler.forward(_inputs)
+
+        from .ort_wrapper import OrtWrapper
+        baseline = OrtWrapper("/home/khj/下载/7b-onnx/alpaca-onnx-7B-fp16/models/decoder-merge-{}.onnx".format(idx))
+        ort_outputs = baseline.forward(_inputs)
+
+        print('round {}'.format(idx))
+        keys = ['hidden_in', 'attn_mask', 'position_ids']
+        for key in keys:
+            np.save(key, _inputs[key])
+        print(np.allclose(outputs['hidden_out'], ort_outputs['hidden_out']))
+        print(np.allclose(outputs['past_key'], ort_outputs['past_key']))
+        print(np.allclose(outputs['past_value'], ort_outputs['past_value']))
         
+        import pdb
+        pdb.set_trace()
+
         return outputs
 
     def embed(self, input_ids: np.array):
