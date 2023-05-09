@@ -191,6 +191,7 @@ class Llama:
 
         # decoder backbone loop
         next_token = input_ids
+        pre = 0
         while True:
             # decoder backbone
             logits = self.decode(next_token)
@@ -206,10 +207,20 @@ class Llama:
             # Caution:
             # *** ValueError: sum(pvals[:-1].astype(np.float64)) > 1.0. The pvals array is cast to 64-bit floating point prior to checking the sum. Precision changes when casting may cause problems even if the sum of the original pvals is valid.
             next_token = npmultinominal2D(probs).astype(input_ids.dtype)
-            logger.debug(next_token)
+            # logger.debug(next_token)
 
             input_ids = np.concatenate(
                 [input_ids, next_token.reshape((1, 1))], axis=1)
+
+
+            decoded = self.tokenizer.decode(input_ids[0].tolist())
+            out = str(decoded.split('Response:')[1])
+
+            # stream print
+            now = len(out)
+            if now - 1 > pre:
+                print(out[pre: now-1], end="", flush=True)
+                pre = now - 1
 
             if input_ids.shape[-1] >= self.config['max'] or next_token[
                     0, 0] == self.FINISH_TOKEN:
