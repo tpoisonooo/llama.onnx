@@ -2,7 +2,9 @@
 
 ## News
 
-04/?? deploy <llama.onnx, quant table> to aarch64
+05/?? deploy to aarch64
+
+05/09 trt output wrong value until [issue 2928](https://github.com/NVIDIA/TensorRT/issues/2928) solved
 
 04/19  [remove GPTQ zero point guidance](docs/remove-GPTQ-zero-point.md)
 
