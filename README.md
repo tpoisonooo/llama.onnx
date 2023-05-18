@@ -1,8 +1,9 @@
 # llama.onnx
 
 ## News
+05/?? add RWKV script and conversion description
 
-05/?? deploy to aarch64
+05/18 add RWKV-4 onnx models and [LLM structure comparison](https://zhuanlan.zhihu.com/p/629821901)
 
 05/09 trt output wrong value until [issue 2928](https://github.com/NVIDIA/TensorRT/issues/2928) solved
 
@@ -41,16 +42,17 @@ Why do this ?
 
 Download onnx models here:
 
-| Precision | Size | URL |
-| :-: | :-: | :-: |
-| fp32 | 26GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main) |
-| fp16 | 13GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16) or [硬件模型库](https://platform.openmmlab.com/deploee/onnx-list) |
+| Model | Precision | Size | URL |
+| :-: | :-: | :-: | :-: |
+| LLaMa-7B | fp32 | 26GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main) |
+| LLaMa-7B | fp16 | 13GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16) or [硬件模型库](https://platform.openmmlab.com/deploee/onnx-list) |
+| RWKV-4-palm-450M | fp16 |  920MB | [huggingface](https://huggingface.co/tpoisonooo/rwkv.onnx/tree/RWKV-4-Pile-430M-20220808-8066) |
 
-Here is the graph to call them:
+Here is the graph to call LLaMa:
 
 ![](./images/onnx-flow.jpg)
 
-Try `onnxruntime` demo, no `torch` required, and the precision has been checked.
+Try LLaMa `onnxruntime` demo, no `torch` required, and the precision has been checked.
 
 ```bash
 $ python3 -m pip install -r requirements.txt
@@ -65,7 +67,7 @@ Bonjour.
 $ python3 demo-single.py --help
 ```
 
-## Export onnx
+## Export LLaMa onnx
 
 **STEP1 Convert to HF format**
 
