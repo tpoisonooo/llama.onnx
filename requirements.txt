@@ -2,3 +2,4 @@ onnxruntime
 loguru
 sentencepiece
 psutil
+tokenizers

@@ -1,4 +1,4 @@
-# llama/rwkv onnx
+# LLaMa/RWKV onnx
 
 Download onnx models here:
 
@@ -10,9 +10,8 @@ Download onnx models here:
 
 
 ## News
-05/?? add RWKV script and conversion description
 
-05/18 add RWKV-4 onnx models and [LLM structure comparison](https://zhuanlan.zhihu.com/p/629821901)
+05/18 release RWKV-4 onnx models, standalone script and [LLM structure comparison](https://zhuanlan.zhihu.com/p/629821901)
 
 05/09 trt output wrong value until [issue 2928](https://github.com/NVIDIA/TensorRT/issues/2928) solved
 
@@ -35,21 +34,20 @@ Download onnx models here:
 
 ## Features
 
-* Release llama 7B onnx models
-* With a 400-lines onnxruntime alpaca demo
-  * neither `torch` nor `transformers` required
-  * support memory pool, works on 2GB laptop/PC (very slow :turtle:)
+* Release LLaMa-7B and RWKV-400M onnx models and their onnxruntime standalone demo
+* No `torch` or `transformers` required
+* Support memory pool, works on 2GB laptop/PC (very slow :turtle:)
 
 Why do this ?
-1. **Visualization**. `graphviz` crashed on llama model. LLM visualization tool must support nest or operator folding feature
-2. **Quatization**. LLM often repeat itself, just like [fractal](https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/fractal_small.gif). For llama quantization, loading part of decoder backbone would be enough (400MB). It could be quantized partially
+1. **Visualization**. `graphviz` crashed on LLaMa model. LLM visualization tool must support nest or operator folding feature
+2. **Quatization**. LLM often repeat itself, just like [fractal](https://raw.githubusercontent.com/taichi-dev/public_files/master/taichi/fractal_small.gif). For LLaMa quantization, loading part of decoder backbone would be enough (400MB). It could be quantized partially
 3. **Embeded device**. Small board IO error occurs when `dd` a big single file
 4. **Distributed system**. Inference LLM on many hybrid (FPGA/NPU/GPGPU) devices would be simple
 5. **onnx tools**. Device manufacturer has support onnx well, there is no reason to neglect it
 
 ## Usage
 
-Here is the graph to call LLaMa:
+Here is the graph to call LLaMa (RWKV is similar):
 
 ![](./images/onnx-flow.jpg)
 
@@ -57,15 +55,40 @@ Try LLaMa `onnxruntime` demo, no `torch` required, and the precision has been ch
 
 ```bash
 $ python3 -m pip install -r requirements.txt
-$ python3 demo-single.py ${FP16_ONNX_DIR} "bonjour"
+$ python3 demo_llama.py ${FP16_ONNX_DIR} "bonjour"
 ..
 # If you only have 4GB memory, use `--poolsize`
-$ python3 demo-single.py ${FP16_ONNX_DIR} "bonjour" --poolsize 4
+$ python3 demo_llama.py ${FP16_ONNX_DIR} "bonjour" --poolsize 4
 ..
 Bonjour.
 
 # Try more options
-$ python3 demo-single.py --help
+$ python3 demo_llama.py --help
+```
+
+Use [demo_rwkv.py](./demo_rwkv.py) to run RWKV:
+```bash
+$ python3 demo_rwkv.py ${FP16_ONNX_DIR}
+```
+
+
+## Export RWKV onnx
+1. git clone [RWKV](https://github.com/BlinkDL/ChatRWKV) and his models
+2. copy [onnx_RWKV_in_150_lines.py](tools/onnx_RWKV_in_150_lines.py) to ChatRWKV
+
+```bash
+$ git clone https://github.com/BlinkDL/ChatRWKV --depth=1
+$ cp llama.onnx/tools/onnx_RWKV_in_150_lines.py  ChatRWKV
+$ cd ChatRWKV
+$ mkdir models
+$ python3 onnx_RWKV_in_150_lines.py
+```
+  
+Then you would get onnx files.
+
+```bash
+$ ls -lah models
+..
 ```
 
 ## Export LLaMa onnx
@@ -112,14 +135,10 @@ $ cd tools
 $ python3 convert-to-tvm.py ${ONNX_PATH} ${OUT_DIR}
 ```
 
-## Quantization
-
-Mixed-precision kernel optimization is on the way. [Here](docs/remove-GPTQ-zero-point.md) is a part of guidance.
-
 ## Notes
-1. Any `logits_processor` or `BeamSearch` not implemented, so the result would be not good
+1. For model structure, please read [外行也能看懂的大语言模型结构对比](https://zhuanlan.zhihu.com/p/629821901)
 2. I have compared the output values of `onnxruntime-cpu` and `torch-cuda`, and the maximum error is 0.002, not bad
-3. The current state is equivalent to these configurations
+3. The current `demo_llama.py` state is equivalent to these configurations
 ```bash
 temperature=0.1
 total_tokens=2000
@@ -127,15 +146,18 @@ top_p=1.0
 top_k=40
 repetition_penalty=1.0
 ```
+4. Mixed-precision kernel optimization is on the way. [Here](docs/remove-GPTQ-zero-point.md) is a part of guidance.
 
 
 ## Acknowlegements
-* [llama](https://github.com/facebookresearch/llama)
+* [RWKV](https://github.com/BlinkDL/ChatRWKV)
+* [LLaMa](https://github.com/facebookresearch/llama)
 * [alpaca](https://github.com/tatsu-lab/stanford_alpaca)
 * [alpaca-lora](https://github.com/tloen/alpaca-lora)
 * [transformers](https://github.com/huggingface/transformers)
 * [peft](https://github.com/huggingface/peft)
 * [Chinese-LLaMA-Alpaca](https://github.com/ymcui/Chinese-LLaMA-Alpaca)
+
 
 
 ## License

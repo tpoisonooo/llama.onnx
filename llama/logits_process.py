@@ -28,3 +28,15 @@ def warp_temperature(tensor: np.array, temperature: float):
         raise Exception('bad temperature {}, make sure `0.0 < temperature < 1.0`')
     
     return tensor / temperature
+
+# copy from github.com/BLinkDL/ChatRWKV
+def sample_logits(probs, temperature=1.0, top_p=0.85):
+    sorted_probs = np.sort(probs)[::-1]
+    cumulative_probs = np.cumsum(sorted_probs)
+    cutoff = float(sorted_probs[np.argmax(cumulative_probs > top_p)])
+    probs[probs < cutoff] = 0
+    if temperature != 1.0:
+        probs = probs.pow(1.0 / temperature)
+    probs = probs / np.sum(probs)
+    out = np.random.choice(a=len(probs), p=probs)
+    return out
