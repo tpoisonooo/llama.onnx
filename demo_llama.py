@@ -1,4 +1,5 @@
-from llama import Tokenizer, Decoder, MemoryPoolSimple, npsoftmax, npmultinominal2D, warp_temperature, warp_topk
+from llama import Tokenizer, Decoder
+from public import MemoryPoolSimple, npsoftmax, npmultinominal2D, warp_temperature, warp_topk
 import numpy as np
 import os
 import pdb
