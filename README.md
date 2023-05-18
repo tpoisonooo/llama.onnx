@@ -1,5 +1,14 @@
 # llama/rwkv onnx
 
+Download onnx models here:
+
+| Model | Precision | Size | URL |
+| :-: | :-: | :-: | :-: |
+| LLaMa-7B | fp32 | 26GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main) |
+| LLaMa-7B | fp16 | 13GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16) or [硬件模型库](https://platform.openmmlab.com/deploee/onnx-list) |
+| RWKV-4-palm-450M | fp16 |  920MB | [huggingface](https://huggingface.co/tpoisonooo/rwkv.onnx/tree/RWKV-4-Pile-430M-20220808-8066) |
+
+
 ## News
 05/?? add RWKV script and conversion description
 
@@ -39,14 +48,6 @@ Why do this ?
 5. **onnx tools**. Device manufacturer has support onnx well, there is no reason to neglect it
 
 ## Usage
-
-Download onnx models here:
-
-| Model | Precision | Size | URL |
-| :-: | :-: | :-: | :-: |
-| LLaMa-7B | fp32 | 26GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main) |
-| LLaMa-7B | fp16 | 13GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16) or [硬件模型库](https://platform.openmmlab.com/deploee/onnx-list) |
-| RWKV-4-palm-450M | fp16 |  920MB | [huggingface](https://huggingface.co/tpoisonooo/rwkv.onnx/tree/RWKV-4-Pile-430M-20220808-8066) |
 
 Here is the graph to call LLaMa:
 
