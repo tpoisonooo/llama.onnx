@@ -60,7 +60,7 @@ def main():
     out_last = 0
     out, state = init_out, init_state
     for i in range(args.length):
-        token = sample_logits(out)
+        token = sample_logits(out.astype(np.float32))
         all_tokens += [token]
         tmp = tokenizer.decode(all_tokens[out_last:])
         if '\ufffd' not in tmp:  # only print when we have a valid utf-8 string
