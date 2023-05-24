@@ -6,7 +6,7 @@ Download onnx models here:
 | :-: | :-: | :-: | :-: | :-: |
 | LLaMa-7B | fp32 | 26GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/main) | [demo_llama.py](./demo_llama.py) |
 | LLaMa-7B | fp16 | 13GB | [huggingface](https://huggingface.co/tpoisonooo/alpaca.onnx/tree/fp16) or [硬件模型库](https://platform.openmmlab.com/deploee/onnx-list) | [demo_llama.py](./demo_llama.py) |
-| RWKV-4-palm-450M | fp16 |  920MB | [huggingface](https://huggingface.co/tpoisonooo/rwkv.onnx/tree/RWKV-4-Pile-430M-20220808-8066) | [demo_rwkv.py](./demo_llama.py) |
+| RWKV-4-palm-430M | fp16 |  920MB | [huggingface](https://huggingface.co/tpoisonooo/rwkv.onnx/tree/RWKV-4-Pile-430M-20220808-8066) | [demo_rwkv.py](./demo_llama.py) |
 
 
 ## News
