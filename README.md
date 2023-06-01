@@ -73,7 +73,7 @@ $ python3 demo_rwkv.py ${FP16_ONNX_DIR}
 
 
 ## Export RWKV onnx
-1. git clone [RWKV](https://github.com/BlinkDL/ChatRWKV) and his models
+1. git clone [RWKV](https://github.com/BlinkDL/ChatRWKV) and download its models
 2. copy [onnx_RWKV_in_150_lines.py](tools/onnx_RWKV_in_150_lines.py) to ChatRWKV
 
 ```bash
