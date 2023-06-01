@@ -136,7 +136,7 @@ $ python3 convert-to-tvm.py ${ONNX_PATH} ${OUT_DIR}
 ```
 
 ## Notes
-1. For model structure, please read [外行也能看懂的大语言模型结构对比](https://zhuanlan.zhihu.com/p/629821901)
+1. For model structure, please read [LLaMa 和 RWKV 结构对比](https://zhuanlan.zhihu.com/p/629821901)
 2. I have compared the output values of `onnxruntime-cpu` and `torch-cuda`, and the maximum error is 0.002, not bad
 3. The current `demo_llama.py` state is equivalent to these configurations
 ```bash
