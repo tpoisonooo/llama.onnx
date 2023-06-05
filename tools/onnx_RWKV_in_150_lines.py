@@ -148,29 +148,7 @@ class Mixer(torch.nn.Module):
         x, s1, s2, s3, s4 = self.forward_att(x, state)
         x, s0 = self.forward_ffn(x, state)
         return x, torch.cat([s0,s1,s2,s3,s4])
-
-
-class ChannelMixer(torch.nn.Module):
-    def __init__(self, time_mix_k, time_mix_r, kw, vw, rw, ln_weight, ln_bias):
-        super().__init__()
-        self.time_mix_k = time_mix_k
-        self.time_mix_r = time_mix_r
-        self.kw = kw
-        self.vw = vw
-        self.rw = rw
-        self.ln_weight = ln_weight
-        self.ln_bias = ln_bias
-
-    def forward(self, x, state):
-        y = x
-        x = F.layer_norm(x, (1024, ), weight=self.ln_weight, bias=self.ln_bias)
-        xk = x * self.time_mix_k + state[0].flatten() * (1 - self.time_mix_k)
-        xr = x * self.time_mix_r + state[0].flatten() * (1 - self.time_mix_r)
-        r = torch.sigmoid(self.rw @ xr)
-        k = torch.square(torch.relu(self.kw @ xk))  # square relu, primer paper
-        return y + (r * (self.vw @ k)), x
-
-
+    
 
 class RWKV_RNN(torch.jit.ScriptModule):
 
