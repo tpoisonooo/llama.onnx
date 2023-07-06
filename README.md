@@ -1,6 +1,6 @@
 # LLaMa/RWKV onnx
 
-## :rocket: Please read [this issue](https://github.com/tpoisonooo/llama.onnx/issues/25) for GPU inference
+## :rocket: Please read [this issue](https://github.com/tpoisonooo/llama.onnx/issues/25) for LLaMa GPU inference
 
 Download onnx models here:
 
