@@ -1,5 +1,7 @@
 # LLaMa/RWKV onnx
 
+## :rocket: Please read [this issue](https://github.com/tpoisonooo/llama.onnx/issues/25) for GPU inference
+
 Download onnx models here:
 
 | Model | Precision | Size | URL | Demo |
@@ -10,7 +12,6 @@ Download onnx models here:
 
 
 ## News
-:rocket: Please read [this issue](https://github.com/tpoisonooo/llama.onnx/issues/25) for GPU inference.
 
 05/18 release RWKV-4 onnx models, standalone script and [LLM structure comparison](https://zhuanlan.zhihu.com/p/629821901)
 
